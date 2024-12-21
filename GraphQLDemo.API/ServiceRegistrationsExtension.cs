@@ -27,7 +27,7 @@ namespace GraphQLDemo.API
 
             if (connectionString != null)
             {
-                services.AddPooledDbContextFactory<SchoolDbContext>(o => o.UseSqlite(connectionString));
+                services.AddPooledDbContextFactory<SchoolDbContext>(o => o.UseSqlite(connectionString).LogTo(Console.WriteLine));
             }
             else
             {
