@@ -1,6 +1,9 @@
-﻿using GraphQLDemo.API.Mutations;
+﻿using GraphQLDemo.API.Courses;
+using GraphQLDemo.API.Mutations;
 using GraphQLDemo.API.Queries;
+using GraphQLDemo.API.Services;
 using GraphQLDemo.API.Subscriptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace GraphQLDemo.API
 {
@@ -14,7 +17,7 @@ namespace GraphQLDemo.API
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection RegisterServices(this IServiceCollection services)
+        public static IServiceCollection RegisterServices(this IServiceCollection services, string? connectionString)
         {
             services.AddGraphQLServer()
                 .AddQueryType<Query>()
@@ -22,6 +25,17 @@ namespace GraphQLDemo.API
                 .AddSubscriptionType<Subscription>()
                 .AddInMemorySubscriptions();
 
+            if (connectionString != null)
+            {
+                services.AddPooledDbContextFactory<SchoolDbContext>(o => o.UseSqlite(connectionString));
+            }
+            else
+            {
+                throw new Exception("ConnectionString is not provided");
+            }
+
+            //Register repository
+            services.AddScoped<CoursesRepository>();
             return services;
         }
     }

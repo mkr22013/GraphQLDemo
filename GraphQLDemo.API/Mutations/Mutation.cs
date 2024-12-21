@@ -1,4 +1,5 @@
-﻿using GraphQLDemo.API.MutationResolver;
+﻿using GraphQLDemo.API.Courses;
+using GraphQLDemo.API.DTOs;
 using GraphQLDemo.API.Subscriptions;
 using HotChocolate.Subscriptions;
 
@@ -10,9 +11,9 @@ namespace GraphQLDemo.API.Mutations
     /// <remarks>
     /// Constructor
     /// </remarks>
-    public class Mutation([Service] ITopicEventSender topicEventSender)
+    public class Mutation([Service] ITopicEventSender topicEventSender, CoursesRepository coursesRepository)
     {
-        private readonly List<CourseResults> _courses = [];
+        private readonly CoursesRepository _coursesRepository = coursesRepository;
         private readonly ITopicEventSender topicEventSender = topicEventSender;
 
         /// <summary>
@@ -24,14 +25,25 @@ namespace GraphQLDemo.API.Mutations
         /// <returns></returns>
         public async Task<CourseResults> CreateCourse(CourseInputType courseInput)
         {
-            var course = new CourseResults
+            //Map input with courseDTO
+            var courseDTO = new CourseDTO()
             {
-                Id = Guid.NewGuid(),
                 Name = courseInput.Name,
                 Subject = courseInput.Subject,
-                InstructorId = courseInput.InstructorId
+                InstructorId = courseInput.InstructorId,
             };
-            _courses.Add(course);
+
+            //Call repository
+            courseDTO = await _coursesRepository.Create(courseDTO);
+
+            var course = new CourseResults
+            {
+                Id = courseDTO.Id,
+                Name = courseDTO.Name,
+                Subject = courseDTO.Subject,
+                InstructorId = courseDTO.InstructorId
+            };
+     
             await topicEventSender.SendAsync("CourseAdded", course);
             return course;
         }
@@ -46,17 +58,31 @@ namespace GraphQLDemo.API.Mutations
         /// <returns></returns>
         public async Task<CourseResults> UpdateCourse(Guid id, CourseInputType courseInput)
         {
-            //First get the course from the list
-            var course = _courses.FirstOrDefault(c => c.Id == id) ?? throw new GraphQLException(new Error("Course not found", "COURSE_NOT_FOUND"));
-            course.Name = courseInput.Name;
-            course.Subject = courseInput.Subject;
-            course.InstructorId = courseInput.InstructorId;
+            //Map input with courseDTO
+            var courseDTO = new CourseDTO()
+            {
+                Id = id,
+                Name = courseInput.Name,
+                Subject = courseInput.Subject,
+                InstructorId = courseInput.InstructorId,
+            };
+
+            //TODO: First check if course exist and if not throw exception 
+
+            courseDTO = await _coursesRepository.Update(courseDTO);
+            var course = new CourseResults
+            {
+                Id = courseDTO.Id,
+                Name = courseDTO.Name,
+                Subject = courseDTO.Subject,
+                InstructorId = courseDTO.InstructorId
+            };
 
             //Send event
             string updateCourseTopic = $"{course.Id}_{nameof(Subscription.SubscribeToCourse)}";
             await topicEventSender.SendAsync(updateCourseTopic, course);
 
-            return await Task.Run(() => course);
+            return course;
         }
 
         /// <summary>
@@ -67,7 +93,7 @@ namespace GraphQLDemo.API.Mutations
         public async Task<bool> DeleteCourse(Guid id)
         {
             //First get the course from the list
-            return await Task.Run(() => _courses.RemoveAll(c => c.Id == id) >= 1);
+            return await _coursesRepository.Delete(id);
         }
     }
 }

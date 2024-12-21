@@ -1,12 +1,7 @@
-﻿namespace GraphQLDemo.API.Schema
-{
-    public enum Subject
-    {
-        Math,
-        Science,
-        History
-    }
+﻿using GraphQLDemo.API.Models;
 
+namespace GraphQLDemo.API.Schema
+{
     /// <summary>
     /// Domain entity
     /// </summary>

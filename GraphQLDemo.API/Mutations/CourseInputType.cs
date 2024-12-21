@@ -1,10 +1,10 @@
-﻿using GraphQLDemo.API.Schema;
+﻿using GraphQLDemo.API.Models;
 
-namespace GraphQLDemo.API.MutationResolver
+namespace GraphQLDemo.API.Mutations
 {
     public class CourseInputType
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public Subject Subject { get; set; }
         public Guid InstructorId { get; set; }
     }
