@@ -7,7 +7,7 @@ namespace GraphQLDemo.API
     /// <summary>
     /// Service Registration Class
     /// </summary>
-    public static class ServiceRegistrations
+    public static class ServiceRegistrationsExtension
     {
         /// <summary>
         /// Static function to register all services to keep program.cs clean

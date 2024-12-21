@@ -53,7 +53,7 @@ namespace GraphQLDemo.API.Mutations
             course.InstructorId = courseInput.InstructorId;
 
             //Send event
-            string updateCourseTopic = $"{course.Id}_{nameof(Subscription.OnCourseUpdated)}";
+            string updateCourseTopic = $"{course.Id}_{nameof(Subscription.SubscribeToCourse)}";
             await topicEventSender.SendAsync(updateCourseTopic, course);
 
             return await Task.Run(() => course);

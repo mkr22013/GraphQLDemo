@@ -1,5 +1,4 @@
 ﻿using GraphQLDemo.API.Mutations;
-using GraphQLDemo.API.Schema;
 using HotChocolate.Execution;
 using HotChocolate.Subscriptions;
 
@@ -12,7 +11,7 @@ namespace GraphQLDemo.API.Subscriptions
     public class Subscription
     {
         /// <summary>
-        /// Subscription for when a course is added
+        /// Subscription when a course is added
         /// </summary>
         /// <param name="course"></param>
         /// <returns></returns>
@@ -23,17 +22,41 @@ namespace GraphQLDemo.API.Subscriptions
             return course;
         }
 
+        #region "SubscribeAndResolve"
+
+        ///// <summary>
+        ///// Subscription for when a course is updated only for certain course id
+        ///// </summary>
+        ///// <param name="courseId"></param>
+        ///// <param name="topicEventReceiver"></param>
+        ///// <returns></returns>
+        //[SubscribeAndResolve]
+        //public ValueTask<ISourceStream<CourseResults>> OnCourseUpdated(Guid courseId, [Service] ITopicEventReceiver topicEventReceiver)
+        //{
+        //    string topicName = $"{courseId}_{nameof(Subscription.OnCourseUpdated)}";
+        //    return topicEventReceiver.SubscribeAsync<CourseResults>(topicName);
+        //}
+
+        #endregion
+
         /// <summary>
-        /// Subscription for when a course is updated only for certain course id
+        /// Declare the custom subscription details
         /// </summary>
         /// <param name="courseId"></param>
         /// <param name="topicEventReceiver"></param>
         /// <returns></returns>
-        [SubscribeAndResolve]
-        public ValueTask<ISourceStream<CourseResults>> OnCourseUpdated(Guid courseId, [Service] ITopicEventReceiver topicEventReceiver)
+        public ValueTask<ISourceStream<CourseResults>> SubscribeToCourse(Guid courseId, [Service] ITopicEventReceiver topicEventReceiver)
         {
-            string topicName = $"{courseId}_{nameof(Subscription.OnCourseUpdated)}";
+            string topicName = $"{courseId}_{nameof(Subscription.SubscribeToCourse)}";
             return topicEventReceiver.SubscribeAsync<CourseResults>(topicName);
         }
+
+        /// <summary>
+        /// Subscription when a course is updated
+        /// </summary>
+        /// <param name="course"></param>
+        /// <returns></returns>
+        [Subscribe (With = nameof(SubscribeToCourse))]
+        public CourseResults OnCourseUpdated([EventMessage] CourseResults course) { return course; }
     }
 }
