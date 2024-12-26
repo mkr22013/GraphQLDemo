@@ -1,9 +1,9 @@
-﻿using GraphQLDemo.API.Courses;
-using GraphQLDemo.API.DTOs;
-using GraphQLDemo.API.Subscriptions;
+﻿using GraphQLDemo.API.DTOs;
+using GraphQLDemo.API.Schema.Subscriptions;
+using GraphQLDemo.API.Services.Courses;
 using HotChocolate.Subscriptions;
 
-namespace GraphQLDemo.API.Mutations
+namespace GraphQLDemo.API.Schema.Mutations
 {
     /// <summary>
     /// Mutation Resolver for Create, Update and Delete operations
@@ -43,8 +43,9 @@ namespace GraphQLDemo.API.Mutations
                 Subject = courseDTO.Subject,
                 InstructorId = courseDTO.InstructorId
             };
-     
+
             await topicEventSender.SendAsync("CourseAdded", course);
+
             return course;
         }
 

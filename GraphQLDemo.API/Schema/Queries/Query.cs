@@ -1,7 +1,6 @@
-﻿using GraphQLDemo.API.Courses;
-using GraphQLDemo.API.Schema;
+﻿using GraphQLDemo.API.Services.Courses;
 
-namespace GraphQLDemo.API.Queries
+namespace GraphQLDemo.API.Schema.Queries
 {
     /// <summary>
     /// Query class to hold all the queries 
@@ -34,13 +33,14 @@ namespace GraphQLDemo.API.Queries
                 Id = c.Id,
                 Name = c.Name,
                 Subject = c.Subject,
-                Instructor = new InstructorType()
-                {
-                    Id = c.Instructor.Id,
-                    FirstName = c.Instructor.FirstName,
-                    LastName = c.Instructor.LastName,
-                    Salary = c.Instructor.Salary
-                },
+                InstructorId = c.InstructorId,
+                //Instructor = new InstructorType()
+                //{
+                //    Id = c.Instructor.Id,
+                //    FirstName = c.Instructor.FirstName,
+                //    LastName = c.Instructor.LastName,
+                //    Salary = c.Instructor.Salary
+                //},
             });
         }
 
@@ -54,20 +54,21 @@ namespace GraphQLDemo.API.Queries
             var courseDTOs = await _coursesRepository.GetById(guid);
             if (courseDTOs == null)
             {
-                return null;    
+                return null;
             }
             return new CourseType()
             {
                 Id = courseDTOs.Id,
                 Name = courseDTOs.Name,
                 Subject = courseDTOs.Subject,
-                Instructor = new InstructorType()
-                {
-                    Id = courseDTOs.Instructor.Id,
-                    FirstName = courseDTOs.Instructor.FirstName,
-                    LastName = courseDTOs.Instructor.LastName,
-                    Salary = courseDTOs.Instructor.Salary
-                },
+                InstructorId = courseDTOs.InstructorId,
+                //Instructor = new InstructorType()
+                //{
+                //    Id = courseDTOs.Instructor.Id,
+                //    FirstName = courseDTOs.Instructor.FirstName,
+                //    LastName = courseDTOs.Instructor.LastName,
+                //    Salary = courseDTOs.Instructor.Salary
+                //},
             };
         }
     }

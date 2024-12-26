@@ -1,6 +1,6 @@
 ﻿using GraphQLDemo.API.Models;
 
-namespace GraphQLDemo.API.Mutations
+namespace GraphQLDemo.API.Schema.Mutations
 {
     public class CourseInputType
     {

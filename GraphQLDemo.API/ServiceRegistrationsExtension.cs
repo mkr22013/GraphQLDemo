@@ -1,8 +1,10 @@
-﻿using GraphQLDemo.API.Courses;
-using GraphQLDemo.API.Mutations;
-using GraphQLDemo.API.Queries;
+﻿using GraphQLDemo.API.DataLoaders;
+using GraphQLDemo.API.Schema.Mutations;
+using GraphQLDemo.API.Schema.Queries;
+using GraphQLDemo.API.Schema.Subscriptions;
 using GraphQLDemo.API.Services;
-using GraphQLDemo.API.Subscriptions;
+using GraphQLDemo.API.Services.Courses;
+using GraphQLDemo.API.Services.Instructors;
 using Microsoft.EntityFrameworkCore;
 
 namespace GraphQLDemo.API
@@ -36,6 +38,9 @@ namespace GraphQLDemo.API
 
             //Register repository
             services.AddScoped<CoursesRepository>();
+            services.AddScoped<InstructorsRepository>();
+            services.AddScoped<InstructorDataLoader>();
+
             return services;
         }
     }

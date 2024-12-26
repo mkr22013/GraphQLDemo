@@ -1,8 +1,8 @@
-﻿using GraphQLDemo.API.Mutations;
+﻿using GraphQLDemo.API.Schema.Mutations;
 using HotChocolate.Execution;
 using HotChocolate.Subscriptions;
 
-namespace GraphQLDemo.API.Subscriptions
+namespace GraphQLDemo.API.Schema.Subscriptions
 {
 
     /// <summary>
@@ -47,7 +47,7 @@ namespace GraphQLDemo.API.Subscriptions
         /// <returns></returns>
         public ValueTask<ISourceStream<CourseResults>> SubscribeToCourse(Guid courseId, [Service] ITopicEventReceiver topicEventReceiver)
         {
-            string topicName = $"{courseId}_{nameof(Subscription.SubscribeToCourse)}";
+            string topicName = $"{courseId}_{nameof(SubscribeToCourse)}";
             return topicEventReceiver.SubscribeAsync<CourseResults>(topicName);
         }
 
@@ -56,7 +56,7 @@ namespace GraphQLDemo.API.Subscriptions
         /// </summary>
         /// <param name="course"></param>
         /// <returns></returns>
-        [Subscribe (With = nameof(SubscribeToCourse))]
+        [Subscribe(With = nameof(SubscribeToCourse))]
         public CourseResults OnCourseUpdated([EventMessage] CourseResults course) { return course; }
     }
 }
