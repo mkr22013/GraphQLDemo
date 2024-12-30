@@ -1,4 +1,7 @@
-﻿using GraphQLDemo.API.Services.Courses;
+﻿using GraphQLDemo.API.Schema.Filters;
+using GraphQLDemo.API.Schema.Sorters;
+using GraphQLDemo.API.Services;
+using GraphQLDemo.API.Services.Courses;
 
 namespace GraphQLDemo.API.Schema.Queries
 {
@@ -24,7 +27,7 @@ namespace GraphQLDemo.API.Schema.Queries
         /// <summary>
         /// Get all courses 
         /// </summary>
-        /// <returns></returns>
+        /// <returns></returns>       
         public async Task<IEnumerable<CourseType>> GetCourses()
         {
             var courseDTOs = await _coursesRepository.GetAll();
@@ -41,6 +44,20 @@ namespace GraphQLDemo.API.Schema.Queries
                 //    LastName = c.Instructor.LastName,
                 //    Salary = c.Instructor.Salary
                 //},
+            });
+        }
+        [UseDbContext(typeof(SchoolDbContext))]
+        [UsePaging(IncludeTotalCount = true, DefaultPageSize = 10)]
+        [UseFiltering(typeof(CourseFilterType))] //This is custom filter. CourseFilterType just ignores student object so we can not perform filter on student object 
+        [UseSorting(typeof(CourseSortType))]
+        public IQueryable<CourseType> GetPaginatedCourses([ScopedService] SchoolDbContext context)
+        {
+            return context.Cources.Select(c => new CourseType()
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Subject = c.Subject,
+                InstructorId = c.InstructorId
             });
         }
 

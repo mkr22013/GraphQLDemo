@@ -22,9 +22,11 @@ namespace GraphQLDemo.API
         public static IServiceCollection RegisterServices(this IServiceCollection services, string? connectionString)
         {
             services.AddGraphQLServer()
-                .AddQueryType<Query>()
-                .AddMutationType<Mutation>()
-                .AddSubscriptionType<Subscription>()
+                .AddQueryType<Query>() //This is for query
+                .AddMutationType<Mutation>() //This is for DML
+                .AddSubscriptionType<Subscription>() //This is for eventing
+                .AddFiltering()//This is for query filtering. It apply where condition while querying
+                .AddSorting()
                 .AddInMemorySubscriptions();
 
             if (connectionString != null)
