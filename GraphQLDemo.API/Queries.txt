@@ -156,6 +156,29 @@
   }
 }
 
+//InterfaceType Query
+{
+  search(term: "Biology")
+  {
+    __typename
+    id
+    ...on InstructorType
+    {
+      id
+      firstName
+      lastName
+      salary
+    }
+    ...on CourseType
+    {
+      id
+      name
+      subject
+      instructorId
+    }
+  }
+}
+
 
 MUTATIONS
 ============

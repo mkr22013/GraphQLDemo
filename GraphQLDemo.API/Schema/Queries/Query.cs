@@ -1,17 +1,13 @@
-﻿using GraphQLDemo.API.Schema.Filters;
-using GraphQLDemo.API.Schema.Sorters;
-using GraphQLDemo.API.Services;
-using GraphQLDemo.API.Services.Courses;
+﻿using GraphQLDemo.API.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace GraphQLDemo.API.Schema.Queries
 {
     /// <summary>
     /// Query class to hold all the queries 
     /// </summary>
-    public class Query(CoursesRepository coursesRepository)
+    public class Query
     {
-        private readonly CoursesRepository _coursesRepository = coursesRepository;
-
         /// <summary>
         /// Depcricated method declaration. GraphQL does not have versioning hence it is better to depricate query when not in use
         /// </summary>
@@ -23,70 +19,39 @@ namespace GraphQLDemo.API.Schema.Queries
                 return "Smash that like button and subscribe to Maulin.....";
             }
         }
-
+        
         /// <summary>
-        /// Get all courses 
+        /// Interface type search query 
         /// </summary>
-        /// <returns></returns>       
-        public async Task<IEnumerable<CourseType>> GetCourses()
-        {
-            var courseDTOs = await _coursesRepository.GetAll();
-            return courseDTOs.Select(c => new CourseType()
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Subject = c.Subject,
-                InstructorId = c.InstructorId,
-                //Instructor = new InstructorType()
-                //{
-                //    Id = c.Instructor.Id,
-                //    FirstName = c.Instructor.FirstName,
-                //    LastName = c.Instructor.LastName,
-                //    Salary = c.Instructor.Salary
-                //},
-            });
-        }
-        [UseDbContext(typeof(SchoolDbContext))]
-        [UsePaging(IncludeTotalCount = true, DefaultPageSize = 10)]
-        [UseFiltering(typeof(CourseFilterType))] //This is custom filter. CourseFilterType just ignores student object so we can not perform filter on student object 
-        [UseSorting(typeof(CourseSortType))]
-        public IQueryable<CourseType> GetPaginatedCourses([ScopedService] SchoolDbContext context)
-        {
-            return context.Cources.Select(c => new CourseType()
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Subject = c.Subject,
-                InstructorId = c.InstructorId
-            });
-        }
-
-        /// <summary>
-        /// Get course by Id
-        /// </summary>
-        /// <param name="guid"></param>
+        /// <param name="term"></param>
         /// <returns></returns>
-        public async Task<CourseType?> GetCoursesById(Guid guid)
+        [UseDbContext(typeof(SchoolDbContext))]
+        public async Task<IEnumerable<ISearchResultType>> Search(string term, [ScopedService] SchoolDbContext context)
         {
-            var courseDTOs = await _coursesRepository.GetById(guid);
-            if (courseDTOs == null)
-            {
-                return null;
-            }
-            return new CourseType()
-            {
-                Id = courseDTOs.Id,
-                Name = courseDTOs.Name,
-                Subject = courseDTOs.Subject,
-                InstructorId = courseDTOs.InstructorId,
-                //Instructor = new InstructorType()
-                //{
-                //    Id = courseDTOs.Instructor.Id,
-                //    FirstName = courseDTOs.Instructor.FirstName,
-                //    LastName = courseDTOs.Instructor.LastName,
-                //    Salary = courseDTOs.Instructor.Salary
-                //},
-            };
+            var courses = await context.Cources
+                .Where(c => c.Name.Contains(term))
+                .Select(c => new CourseType()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Subject = c.Subject,
+                    InstructorId = c.InstructorId
+                }).ToListAsync();
+
+            var instructors = await context.Instructors
+                .Where(i => i.FirstName.Contains(term) || i.LastName.Contains(term))
+                .Select(i => new InstructorType()
+                {
+                    Id = i.Id,
+                    FirstName = i.FirstName,
+                    LastName = i.LastName,
+                    Salary = i.Salary
+                }).ToListAsync();
+
+            return new List<ISearchResultType>().Concat(courses).Concat(instructors);
+
         }
+
+       
     }
 }

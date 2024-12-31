@@ -1,10 +1,12 @@
-﻿using GraphQLDemo.API.DataLoaders;
+﻿//using FluentValidation.AspNetCore;
+using GraphQLDemo.API.DataLoaders;
 using GraphQLDemo.API.Schema.Mutations;
 using GraphQLDemo.API.Schema.Queries;
 using GraphQLDemo.API.Schema.Subscriptions;
 using GraphQLDemo.API.Services;
 using GraphQLDemo.API.Services.Courses;
 using GraphQLDemo.API.Services.Instructors;
+using GraphQLDemo.API.Validators;
 using Microsoft.EntityFrameworkCore;
 
 namespace GraphQLDemo.API
@@ -26,7 +28,11 @@ namespace GraphQLDemo.API
                 .AddMutationType<Mutation>() //This is for DML
                 .AddSubscriptionType<Subscription>() //This is for eventing
                 .AddFiltering()//This is for query filtering. It apply where condition while querying
+                .AddType<CourseType>()
+                .AddType<InstructorType>()    
+                .AddTypeExtension<CourseQuery>()
                 .AddSorting()
+                .AddProjections()
                 .AddInMemorySubscriptions();
 
             if (connectionString != null)
@@ -42,7 +48,7 @@ namespace GraphQLDemo.API
             services.AddScoped<CoursesRepository>();
             services.AddScoped<InstructorsRepository>();
             services.AddScoped<InstructorDataLoader>();
-
+            //services.AddTransient<CourseTypeInputValidator>();
             return services;
         }
     }

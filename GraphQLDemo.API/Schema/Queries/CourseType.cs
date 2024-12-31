@@ -7,11 +7,14 @@ namespace GraphQLDemo.API.Schema.Queries
     /// <summary>
     /// Domain entity
     /// </summary>
-    public class CourseType
+    public class CourseType : ISearchResultType
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }
         public Subject Subject { get; set; }
+        [IsProjected(true)] //This is most imp to make sure all 1 to many relations work in case in select we do not ask for InstructorId and then we ask for instructors to return then it will fail
+        //IsProjected attribute makes sure that even in select query we do not ask for it, it will still selected as
+        //it is required for all instructors to load based on that id
         public Guid InstructorId { get; set; }
         #region "Normal Call for Instructor property"
 
