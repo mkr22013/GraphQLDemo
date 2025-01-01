@@ -1,4 +1,4 @@
-﻿//using FluentValidation.AspNetCore;
+﻿using AppAny.HotChocolate.FluentValidation;
 using GraphQLDemo.API.DataLoaders;
 using GraphQLDemo.API.Schema.Mutations;
 using GraphQLDemo.API.Schema.Queries;
@@ -29,8 +29,12 @@ namespace GraphQLDemo.API
                 .AddSubscriptionType<Subscription>() //This is for eventing
                 .AddFiltering()//This is for query filtering. It apply where condition while querying
                 .AddType<CourseType>()
-                .AddType<InstructorType>()    
+                .AddType<InstructorType>()
                 .AddTypeExtension<CourseQuery>()
+                .AddFluentValidation(o =>
+                {
+                    o.UseDefaultErrorMapper();
+                })
                 .AddSorting()
                 .AddProjections()
                 .AddInMemorySubscriptions();
@@ -48,7 +52,7 @@ namespace GraphQLDemo.API
             services.AddScoped<CoursesRepository>();
             services.AddScoped<InstructorsRepository>();
             services.AddScoped<InstructorDataLoader>();
-            //services.AddTransient<CourseTypeInputValidator>();
+            services.AddTransient<CourseTypeInputValidator>();
             return services;
         }
     }
