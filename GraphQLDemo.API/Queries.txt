@@ -1,0 +1,211 @@
+﻿QUERIES
+==========
+
+{
+  courses {
+    id
+    name
+    subject
+    instructorId
+    instructor {
+      id
+      firstName
+      lastName
+      salary
+    }
+    students {
+      id
+      firstName
+      lastName
+      gpa
+    }
+  }
+}
+
+
+//Paginated courses
+{
+  paginatedCourses(first: 3) {
+    edges {
+      node {
+        id
+        name
+        subject
+        instructorId
+        instructor {
+          id
+          firstName
+          lastName
+          salary
+        }
+        students {
+          id
+          firstName
+          lastName
+          gpa
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+//Filter query
+{
+  paginatedCourses(first: 3, where:{
+    name:{
+      contains:"Bio"
+    }
+  }) {
+    edges {
+      node {
+        id
+        name
+        subject
+        instructorId
+        instructor {
+          id
+          firstName
+          lastName
+          salary
+        }
+        students {
+          id
+          firstName
+          lastName
+          gpa
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+// OR Example
+
+{
+  paginatedCourses(
+    first: 3
+    where: { or: [{ name: { contains: "Bio" } }, { subject: { eq: MATH } }] }
+  ) {
+    edges {
+      node {
+        id
+        name
+        subject
+        instructorId
+        instructor {
+          id
+          firstName
+          lastName
+          salary
+        }
+        students {
+          id
+          firstName
+          lastName
+          gpa
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+
+//Get Course by Id
+{
+  coursesById(guid: "") {
+    id
+    name
+    subject
+    instructorId
+    instructor {
+      id
+      firstName
+      lastName
+      salary
+    }
+    students {
+      id
+      firstName
+      lastName
+      gpa
+    }
+  }
+}
+
+//InterfaceType Query
+{
+  search(term: "Biology")
+  {
+    __typename
+    id
+    ...on InstructorType
+    {
+      id
+      firstName
+      lastName
+      salary
+    }
+    ...on CourseType
+    {
+      id
+      name
+      subject
+      instructorId
+    }
+  }
+}
+
+
+MUTATIONS
+============
+
+mutation {
+  createCourse(courseInput: { instructorId: "", name: "", subject: MATH }) {
+    id
+    subject
+    name
+    instructorId
+  }
+}
+
+mutation {
+  updateCourse(
+    id: ""
+    courseInput: { instructorId: "", name: "", subject: MATH }
+  ) {
+    id
+    subject
+    name
+    instructorId
+  }
+}
+
+mutation {
+  deleteCourse(id: "")
+}
+
+

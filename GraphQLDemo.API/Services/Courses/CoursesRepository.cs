@@ -1,8 +1,7 @@
 ﻿using GraphQLDemo.API.DTOs;
-using GraphQLDemo.API.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace GraphQLDemo.API.Courses
+namespace GraphQLDemo.API.Services.Courses
 {
     /// <summary>
     /// Courses repository
@@ -19,8 +18,8 @@ namespace GraphQLDemo.API.Courses
         {
             using var context = _dbContextFactory.CreateDbContext();
             return await context.Cources
-                .Include(c => c.Instructor)
-                .Include(c => c.Students)
+                //.Include(c => c.Instructor)
+                //.Include(c => c.Students)
                 .ToListAsync();
         }
 
@@ -33,8 +32,8 @@ namespace GraphQLDemo.API.Courses
         {
             using var context = _dbContextFactory.CreateDbContext();
             return await context.Cources
-                .Include(c => c.Instructor)
-                .Include(c => c.Students)
+                //.Include(c => c.Instructor)
+                //.Include(c => c.Students)
                 .FirstOrDefaultAsync(c => c.Id == courseId);
         }
 

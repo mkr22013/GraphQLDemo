@@ -1,9 +1,9 @@
-﻿namespace GraphQLDemo.API.Schema
+﻿namespace GraphQLDemo.API.Schema.Queries
 {
     /// <summary>
     /// Domain entity for Instructor
     /// </summary>
-    public class InstructorType
+    public class InstructorType : ISearchResultType
     {
         public Guid Id { get; set; }
         public required string FirstName { get; set; }

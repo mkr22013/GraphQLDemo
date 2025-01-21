@@ -1,9 +1,14 @@
-﻿using GraphQLDemo.API.Courses;
+﻿//using AppAny.HotChocolate.FluentValidation;
+using AppAny.HotChocolate.FluentValidation;
 using GraphQLDemo.API.DTOs;
-using GraphQLDemo.API.Subscriptions;
+using GraphQLDemo.API.Schema.Subscriptions;
+using GraphQLDemo.API.Services.Courses;
+using GraphQLDemo.API.Validators;
+
+//using GraphQLDemo.API.Validators;
 using HotChocolate.Subscriptions;
 
-namespace GraphQLDemo.API.Mutations
+namespace GraphQLDemo.API.Schema.Mutations
 {
     /// <summary>
     /// Mutation Resolver for Create, Update and Delete operations
@@ -23,7 +28,7 @@ namespace GraphQLDemo.API.Mutations
         /// <param name="subject"></param>
         /// <param name="instructorId"></param>
         /// <returns></returns>
-        public async Task<CourseResults> CreateCourse(CourseInputType courseInput)
+        public async Task<CourseResults> CreateCourse([UseFluentValidation,UseValidator<CourseTypeInputValidator>] CourseInputType courseInput)
         {
             //Map input with courseDTO
             var courseDTO = new CourseDTO()
@@ -37,14 +42,15 @@ namespace GraphQLDemo.API.Mutations
             courseDTO = await _coursesRepository.Create(courseDTO);
 
             var course = new CourseResults
-            {
+            { 
                 Id = courseDTO.Id,
                 Name = courseDTO.Name,
                 Subject = courseDTO.Subject,
                 InstructorId = courseDTO.InstructorId
             };
-     
+
             await topicEventSender.SendAsync("CourseAdded", course);
+
             return course;
         }
 
