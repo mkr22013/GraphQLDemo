@@ -99,10 +99,11 @@ namespace GraphQLDemo.API.Schema.Mutations
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<bool> DeleteCourse(Guid id)
+        public async Task<bool> DeleteCourse(string id)
         {
+
             //First get the course from the list
-            return await _coursesRepository.Delete(id);
+            return await _coursesRepository.Delete(new Guid(id));
         }
     }
 }
