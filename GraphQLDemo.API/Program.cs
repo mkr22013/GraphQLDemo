@@ -2,8 +2,20 @@ using GraphQLDemo.API;
 using GraphQLDemo.API.Services;
 using Microsoft.EntityFrameworkCore;
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                      });
+});
 //Get appsettings values
 var connectionString = builder.Configuration.GetConnectionString("default");
 //Register Services 
@@ -23,5 +35,5 @@ app.UseRouting();
 app.UseWebSockets(); //As it is graphQL API, Use WebSockets for subscriptions
 
 app.MapGraphQL(); //As it is graphQL API, Map it to graphQL
-
+app.UseCors(MyAllowSpecificOrigins);
 app.Run();

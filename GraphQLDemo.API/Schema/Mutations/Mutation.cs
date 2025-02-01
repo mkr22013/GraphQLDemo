@@ -1,6 +1,7 @@
 ﻿//using AppAny.HotChocolate.FluentValidation;
 using AppAny.HotChocolate.FluentValidation;
 using GraphQLDemo.API.DTOs;
+using GraphQLDemo.API.Models;
 using GraphQLDemo.API.Schema.Subscriptions;
 using GraphQLDemo.API.Services.Courses;
 using GraphQLDemo.API.Validators;
@@ -30,12 +31,13 @@ namespace GraphQLDemo.API.Schema.Mutations
         /// <returns></returns>
         public async Task<CourseResults> CreateCourse([UseFluentValidation,UseValidator<CourseTypeInputValidator>] CourseInputType courseInput)
         {
+            Enum.TryParse(courseInput.Subject, out Subject mySubject);
             //Map input with courseDTO
             var courseDTO = new CourseDTO()
             {
                 Name = courseInput.Name,
-                Subject = courseInput.Subject,
-                InstructorId = courseInput.InstructorId,
+                Subject = mySubject,
+                InstructorId = new Guid(courseInput.InstructorId),
             };
 
             //Call repository
@@ -64,13 +66,14 @@ namespace GraphQLDemo.API.Schema.Mutations
         /// <returns></returns>
         public async Task<CourseResults> UpdateCourse(Guid id, CourseInputType courseInput)
         {
+            Enum.TryParse(courseInput.Subject, out Subject mySubject);
             //Map input with courseDTO
             var courseDTO = new CourseDTO()
             {
                 Id = id,
                 Name = courseInput.Name,
-                Subject = courseInput.Subject,
-                InstructorId = courseInput.InstructorId,
+                Subject =  mySubject,
+                InstructorId = new Guid(courseInput.InstructorId),
             };
 
             //TODO: First check if course exist and if not throw exception 
