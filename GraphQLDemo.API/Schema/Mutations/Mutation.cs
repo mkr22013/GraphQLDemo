@@ -64,13 +64,14 @@ namespace GraphQLDemo.API.Schema.Mutations
         /// <param name="subject"></param>
         /// <param name="instructorId"></param>
         /// <returns></returns>
-        public async Task<CourseResults> UpdateCourse(Guid id, CourseInputType courseInput)
+        public async Task<CourseResults> UpdateCourse(string id, CourseInputType courseInput)
         {
             Enum.TryParse(courseInput.Subject, out Subject mySubject);
+            
             //Map input with courseDTO
             var courseDTO = new CourseDTO()
             {
-                Id = id,
+                Id = new Guid(id),
                 Name = courseInput.Name,
                 Subject =  mySubject,
                 InstructorId = new Guid(courseInput.InstructorId),
