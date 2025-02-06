@@ -49,9 +49,6 @@ namespace GraphQLDemo.API.Schema.Queries
                 }).ToListAsync();
 
             return new List<ISearchResultType>().Concat(courses).Concat(instructors);
-
-        }
-
-       
+        }       
     }
 }

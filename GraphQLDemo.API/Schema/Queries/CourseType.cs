@@ -1,5 +1,4 @@
 ﻿using GraphQLDemo.API.DataLoaders;
-//using GraphQLDemo.API.Instructors;
 using GraphQLDemo.API.Models;
 
 namespace GraphQLDemo.API.Schema.Queries

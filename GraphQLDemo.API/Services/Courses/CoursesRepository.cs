@@ -83,7 +83,6 @@ namespace GraphQLDemo.API.Services.Courses
             };
             context.Cources.Remove(course);
             return await context.SaveChangesAsync() != 0;
-
         }
     }
 }

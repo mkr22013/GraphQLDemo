@@ -1,12 +1,9 @@
-﻿//using AppAny.HotChocolate.FluentValidation;
-using AppAny.HotChocolate.FluentValidation;
+﻿using AppAny.HotChocolate.FluentValidation;
 using GraphQLDemo.API.DTOs;
 using GraphQLDemo.API.Models;
 using GraphQLDemo.API.Schema.Subscriptions;
 using GraphQLDemo.API.Services.Courses;
 using GraphQLDemo.API.Validators;
-
-//using GraphQLDemo.API.Validators;
 using HotChocolate.Subscriptions;
 
 namespace GraphQLDemo.API.Schema.Mutations
